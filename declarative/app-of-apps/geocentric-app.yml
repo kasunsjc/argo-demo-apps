@@ -6,10 +6,10 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: default
+  project: apps-of-apps
 
   source:
-    repoURL: https://github.com/sidd-harth/test-cd.git
+    repoURL: https://github.com/kasunsjc/argo-demo-apps.git
     targetRevision: HEAD
     path: ./declarative/manifests/geocentric-model
    

@@ -6,7 +6,7 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
-  project: declarative-apps
+  project: apps-of-apps
 
   source:
     repoURL: https://github.com/kasunsjc/argo-demo-apps.git
