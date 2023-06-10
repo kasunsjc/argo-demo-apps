@@ -1,0 +1,52 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+namespace: keyvault-gitops-demo
+metadata:
+  name: azure-kvname-user-msi
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    useVMManagedIdentity: "true"          # Set to true for using managed identity
+    userAssignedIdentityID: <>   # Set the clientID of the user-assigned managed identity to use
+    keyvaultName: aksdemoskeyvault        # Set to the name of your key vault
+    cloudName: ""                         # [OPTIONAL for Azure] if not provided, the Azure environment defaults to AzurePublicCloud
+    objects:  |
+      array:
+        - |
+          objectName: secret1
+          objectType: secret              # object types: secret, key, or cert
+          objectVersion: ""               # [OPTIONAL] object versions, default to latest if empty
+        - |
+          objectName: key1
+          objectType: key
+          objectVersion: ""
+    tenantId: <>                 # The tenant ID of the key vault
+
+
+---
+
+# This is a sample pod definition for using SecretProviderClass and the user-assigned identity to access your key vault
+kind: Pod
+apiVersion: v1
+namespace: keyvault-gitops-demo
+metadata:
+  name: busybox-secrets-store-inline-user-msi
+spec:
+  containers:
+    - name: busybox
+      image: k8s.gcr.io/e2e-test-images/busybox:1.29-1
+      command:
+        - "/bin/sleep"
+        - "10000"
+      volumeMounts:
+      - name: secrets-store01-inline
+        mountPath: "/mnt/secrets-store"
+        readOnly: true
+  volumes:
+    - name: secrets-store01-inline
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: "azure-kvname-user-msi"
