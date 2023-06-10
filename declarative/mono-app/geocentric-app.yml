@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/kasunsjc/argo-demo-apps.git
     targetRevision: HEAD
-    path: ./declarative/manifests/geocentric-model
+    path: ./declarative/mono-app/geocentric-model
 
   destination:
     server: https://kubernetes.default.svc
